@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var iconCancellable: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        if CommandLine.arguments.contains("--record-demo") { AppState.persistenceEnabled = false }
         state = AppState()
         controller = AppController(state: state)
 
@@ -31,7 +32,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.contentViewController = host
         popover.behavior = .transient
 
-        if CommandLine.arguments.contains("--selftest-hidden") {
+        if CommandLine.arguments.contains("--record-demo") {
+            let c = controller!
+            Task { @MainActor in await DemoRecorder(controller: c).run() }
+        } else if CommandLine.arguments.contains("--selftest-hidden") {
             let c = controller!
             Task { @MainActor in await c.runHiddenProbe() }
         } else if CommandLine.arguments.contains("--selftest-snap") {
@@ -52,7 +56,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc private func togglePopover() {
+    @objc func togglePopover() {
         if popover.isShown {
             popover.performClose(nil)
         } else if let button = statusItem.button {

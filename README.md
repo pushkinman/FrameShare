@@ -58,34 +58,87 @@ Needs macOS 14 Sonoma or newer. One download runs on Apple Silicon and Intel Mac
 
 The "FrameShare" window is hidden from you by default: it sits just past the corner of your display, where meeting apps can still share it at full quality. If you'd like to see it, turn it on in **Settings → General → Shared window**.
 
+## See it in action
+
+<p align="center">
+  <img src="docs/media/overview.gif" alt="Moving the frame between a code editor, slides and a chat window; the small FrameShare window in the corner follows along" width="100%">
+</p>
+<p align="center"><sub>Move or resize the frame and the shared window follows instantly. Everything outside the frame is dimmed for you, and viewers never see the frame itself.</sub></p>
+
 ## Features
 
-**Frame**
+### Frame
+
 - Aspect ratios: 16:9, 16:10, 4:3, 3:2, 1:1, 21:9, 9:16, or free
 - Exact width, height and position; Left / Center / Right; full height; left or right half of the screen
 - Frame → active window, and active window → frame, aligned pixel for pixel
 - Dim everything outside the frame; border color, thickness, opacity and padding; lock the frame
 
-**Presenter tools** (in the floating control bar, which can be collapsed, dragged anywhere, and laid out horizontally or vertically)
-- Draw: pen, highlighter, line, arrow, rectangle, ellipse, eraser
+### Draw on anything you share
+
+<img src="docs/media/drawing.gif" alt="Circling a bar in a chart, drawing an arrow and highlighting a line of text, then undo and redo" width="100%">
+
+- Pen, highlighter, line, arrow, rectangle, ellipse and eraser
 - Six colors and three line widths; undo ⌘Z, redo ⇧⌘Z, clear
 - Hold Shift for straight lines; optional auto-fade; Esc goes back to the mouse
-- Spotlight around the cursor
-- Zoom that follows the cursor
-- On-screen timer or countdown
-- Keystroke display
-- Click rings that show where you click
 
-**Privacy**
+### Floating control bar
+
+All the presenter tools in one bar that stays on your screen but never in the shared picture. Collapse it, drag it anywhere, or turn it vertical.
+
+<p align="center">
+  <img src="docs/media/bar-collapsed.png" alt="Collapsed control bar" height="44">
+  &nbsp;&nbsp;
+  <img src="docs/media/bar-expanded.png" alt="Expanded control bar" height="44">
+</p>
+<p align="center">
+  <img src="docs/media/bar-drawing.png" alt="Control bar while drawing, with colors, line widths, undo, redo and clear" width="100%">
+</p>
+
+### Spotlight and zoom
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/media/spotlight.gif" alt="A spotlight follows the cursor and dims the rest of the slide"></td>
+    <td width="50%"><img src="docs/media/zoom.gif" alt="What viewers see while zoom follows the cursor across the slide"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Spotlight</b> follows your cursor and dims the rest</sub></td>
+    <td align="center"><sub><b>Zoom</b> follows your cursor (what viewers see)</sub></td>
+  </tr>
+</table>
+
+### Timer, keystrokes and click rings
+
+<img src="docs/media/presenter.gif" alt="A running timer in the corner, rings where the mouse clicks, and keyboard shortcuts shown at the bottom" width="100%">
+
+- Stopwatch or countdown in any corner
+- Shows the shortcuts and text you type
+- Rings show viewers where you click: yellow for left, blue for right
+
+### Privacy
+
+<img src="docs/media/privacy.gif" alt="What viewers see: a chat window inside the frame turns blurred while the slide stays sharp" width="100%">
+
 - Hide chosen apps from the shared picture completely, or blur them
 - Blur windows or browser tabs by title keyword or URL
 - One-click "blur everything"
 - Hide the mouse cursor from viewers
 
-**Everything else**
+### Menu and settings
+
+<table>
+  <tr>
+    <td width="42%"><img src="docs/media/menu.png" alt="The FrameShare menu with frame size, positions and presenter tools"></td>
+    <td width="58%"><img src="docs/media/settings.png" alt="FrameShare settings, General tab"></td>
+  </tr>
+</table>
+
 - Global hotkeys for every action, all customizable
 - Native resolution, up to 120 fps, pixel-exact output
 - Open at login
+
+<sub>All clips were recorded with FrameShare itself on a demo desktop with made-up content.</sub>
 
 ### Default hotkeys
 
@@ -148,6 +201,8 @@ open -n ~/Applications/FrameShare.app --args --selftest
 ```
 
 This shares for about 3 seconds, captures the shared window the way a meeting app does, and compares it pixel by pixel with the screen. The report is saved to `~/Library/Caches/FrameShare-selftest/`. `--selftest-hidden` checks the hidden shared window, and `--selftest-snap` checks window snapping.
+
+**Re-recording the demo clips:** `--record-demo` covers the screen with a made-up desktop, records only FrameShare's own windows, and saves the clips to `~/Library/Caches/FrameShare-demo/`. It doesn't change your saved settings.
 
 </details>
 

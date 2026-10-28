@@ -18,14 +18,14 @@ final class AppController {
 
     private let capture = CaptureEngine()
     private let renderer: FrameRenderer
-    private var mirror: MirrorWindowController?
-    private let frameWindow = RegionFrameWindow()
+    var mirror: MirrorWindowController?
+    let frameWindow = RegionFrameWindow()
     private var dimWindows: [DimOverlayWindow] = []
-    private let overlay = PresenterOverlayWindow()
-    private var controlBar: ControlBarPanel?
+    let overlay = PresenterOverlayWindow()
+    var controlBar: ControlBarPanel?
     private let keyMonitor = KeystrokeMonitor()
     private let urlWatcher = BrowserURLWatcher()
-    private var settingsWindow: NSWindow?
+    var settingsWindow: NSWindow?
 
     private var cancellables = Set<AnyCancellable>()
     private var lastSettings: Settings
@@ -40,8 +40,11 @@ final class AppController {
     private var privacyTimer: Timer?
     private var privacyTicks = 0
     private var clockTimer: Timer?
-    private var zoomCenter = CGPoint(x: 0.5, y: 0.5)
-    private var blurRects: [CGRect] = []
+    var zoomCenter = CGPoint(x: 0.5, y: 0.5)
+    var blurRects: [CGRect] = []
+    /// Demo recording only: a stand-in mouse position, and extra windows of ours to include in the capture.
+    var demoMouse: CGPoint?
+    var demoIncludedWindows: Set<CGWindowID> = []
     private var urlMatchedPIDs = Set<pid_t>()
     private var timerStart: Date?
     private var timerElapsed: TimeInterval = 0
@@ -334,7 +337,7 @@ final class AppController {
         return CaptureParams(displayID: screen.displayID, sourceRect: src, outputSize: out,
                              showsCursor: !s.hideCursor, fps: s.fps,
                              excludedBundleIDs: excludedBundles(s),
-                             includedWindowIDs: [CGWindowID(overlay.windowNumber)])
+                             includedWindowIDs: Set([CGWindowID(overlay.windowNumber)]).union(demoIncludedWindows))
     }
 
     /// Applies the latest region/settings to the stream. Calls are coalesced while one is in flight.
@@ -515,7 +518,7 @@ final class AppController {
 
     // MARK: Chrome (frame, dimming, overlay)
 
-    private func layoutChrome() {
+    func layoutChrome() {
         let s = state.settings
         let r = s.region
         let sharing = state.isSharing
@@ -633,7 +636,7 @@ final class AppController {
     // MARK: Spotlight & zoom
 
     private func currentMouseNormalized() -> CGPoint? {
-        let m = NSEvent.mouseLocation
+        let m = demoMouse ?? NSEvent.mouseLocation
         let r = state.settings.region
         guard r.contains(m) else { return nil }
         return CGPoint(x: (m.x - r.minX) / r.width, y: (r.maxY - m.y) / r.height)
@@ -662,7 +665,7 @@ final class AppController {
     }
 
     private func presenterTick() {
-        let m = NSEvent.mouseLocation
+        let m = demoMouse ?? NSEvent.mouseLocation
         let r = state.settings.region
         if state.spotlightOn {
             overlay.spotlight.center = CGPoint(x: m.x - r.minX, y: m.y - r.minY)
@@ -682,7 +685,7 @@ final class AppController {
 
     // MARK: Effects (blur + zoom)
 
-    private func updateEffects() {
+    func updateEffects() {
         let s = state.settings
         let fx = RenderEffects(
             blurRects: state.isSharing ? blurRects : [],
@@ -1013,7 +1016,7 @@ final class AppController {
         return Double(sum) / Double((x1 - x0) * (y1 - y0))
     }
 
-    private static func savePNG(_ img: CGImage, _ url: URL) {
+    static func savePNG(_ img: CGImage, _ url: URL) {
         let rep = NSBitmapImageRep(cgImage: img)
         try? rep.representation(using: .png, properties: [:])?.write(to: url)
     }

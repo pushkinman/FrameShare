@@ -282,7 +282,11 @@ final class AppState: ObservableObject {
     /// Writes settings right away (used on quit, so nothing from the last moment is lost).
     func saveNow() { Self.save(settings) }
 
+    /// Off while recording the demo, so it never touches your saved settings.
+    static var persistenceEnabled = true
+
     private static func save(_ s: Settings) {
+        guard persistenceEnabled else { return }
         if let data = try? JSONEncoder().encode(s) {
             UserDefaults.standard.set(data, forKey: key)
         }
